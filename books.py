@@ -4,6 +4,8 @@ from fastapi import APIRouter, Query
 import json
 from pathlib import Path
 
+from modal.book import Book
+
 router = APIRouter()
 
 data_path = Path(__file__).parent / "data" / "books.json"
@@ -32,3 +34,14 @@ def get_book_by_name(title: str = Query(..., description="Name of the book to se
             return {"book": book}
     return {"error": "Book not found", "status_code":404}  
 
+
+@router.post("/books/", response_model=Book)
+def book(book: Book):
+    # Check if the book ID already exists
+    for existing_book in books_data:
+        if existing_book["id"] == book.id:
+            raise HTTPException(status_code=400, detail="Book ID already exists")
+    
+    # Add the new book to the data
+    books_data.append(book.dict())
+    return book
