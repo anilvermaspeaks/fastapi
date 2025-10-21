@@ -1,5 +1,6 @@
 
-from fastapi import APIRouter
+from http.client import HTTPException
+from fastapi import APIRouter, Query
 import json
 from pathlib import Path
 
@@ -22,3 +23,12 @@ def get_book(book_id: int):
         if book["id"] == book_id:
             return {"book": book}
     return {"error": "Book not found"}   
+
+
+@router.get("/books/")
+def get_book_by_name(title: str = Query(..., description="Name of the book to search")):
+    for book in books_data:
+        if book["title"].lower() == title.lower():
+            return {"book": book}
+    return {"error": "Book not found", "status_code":404}  
+
