@@ -14,3 +14,11 @@ with open(data_path, "r") as f:
 @router.get("/books")
 def get_books():
     return {"books": books_data}
+
+
+@router.get("/books/{book_id}")
+def get_book(book_id: int):
+    for book in books_data:
+        if book["id"] == book_id:
+            return {"book": book}
+    return {"error": "Book not found"}   
