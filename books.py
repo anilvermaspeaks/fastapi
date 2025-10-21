@@ -43,5 +43,5 @@ def book(book: Book):
             raise HTTPException(status_code=400, detail="Book ID already exists")
     
     # Add the new book to the data
-    books_data.append(book.dict())
+    books_data.append(book.model_dump())
     return book
